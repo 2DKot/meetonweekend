@@ -20,7 +20,7 @@ jobs:
       - name: Deploy to Droplet
         run: |
           ssh -o StrictHostKeyChecking=no meetonweekend@<your-droplet-ip> << 'EOF'
-            cd /home/meetonweekend
+            cd /home/meetonweekend/app
             git pull origin main
             sudo supervisorctl restart meetonweekend_app
           EOF
