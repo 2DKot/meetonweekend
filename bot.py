@@ -24,9 +24,6 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 assert API_KEY is not None
 
-# Whitelisted usernames that can initiate the poll
-USERNAME_WHITELIST = ["Kot2D", "ANTONY_VISION", "xesoda", "angrebennikov"]
-
 poll_repo = PollRepository()
 
 all_hours = [
@@ -83,13 +80,6 @@ async def start_poll(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_username = update.message.from_user.username
 
-    # Check if the user is in the whitelist
-    if user_username not in USERNAME_WHITELIST:
-        await update.message.reply_text(
-            f"{prefix} Sorry @{user_username}, you don't have permission to initiate a poll."
-        )
-        return
-
     # Set the group chat ID to send results later
     group_chat_id = update.effective_chat.id
     group_name = update.effective_chat.title
@@ -127,7 +117,7 @@ async def start_poll(update: Update, context: ContextTypes.DEFAULT_TYPE):
     poll.set_pending_users(group_user_ids)
 
     # Notify the group that the poll has been sent
-    await update.message.reply_text(f"{prefix} Спрашиваю пацанов...")
+    await update.message.reply_text(f"{prefix} Спрашиваю пацанов и девчонок...")
 
 
 async def clear_poll(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -136,15 +126,6 @@ async def clear_poll(update: Update, context: ContextTypes.DEFAULT_TYPE):
     assert update.message is not None
     assert update.message.from_user is not None
     assert update.effective_chat is not None
-    # Get the username of the user who triggered the command
-    user_username = update.message.from_user.username
-
-    # Check if the user is in the whitelist
-    if user_username not in USERNAME_WHITELIST:
-        await update.message.reply_text(
-            f"Sorry @{user_username}, you don't have permission to clear a poll."
-        )
-        return
 
     # Set the group chat ID to send results later
     group_chat_id = update.effective_chat.id
@@ -258,13 +239,6 @@ async def remind_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Get the username of the user who triggered the command
     user_username = update.message.from_user.username
 
-    # Check if the user is in the whitelist
-    if user_username not in USERNAME_WHITELIST:
-        await update.message.reply_text(
-            f"Sorry @{user_username}, you don't have permission to remind users."
-        )
-        return
-
     # Set the group chat ID
     group_chat_id = update.effective_chat.id
 
@@ -304,13 +278,6 @@ async def repeat_results(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Get the username of the user who triggered the command
     user_username = update.message.from_user.username
 
-    # Check if the user is in the whitelist
-    if user_username not in USERNAME_WHITELIST:
-        await update.message.reply_text(
-            f"Sorry @{user_username}, you don't have permission to remind users."
-        )
-        return
-
     # Set the group chat ID
     group_chat_id = update.effective_chat.id
 
@@ -327,7 +294,6 @@ if __name__ == "__main__":
     # Initialize the bot with the API key
     application = ApplicationBuilder().token(API_KEY).build()
 
-    # Add command handler for /poll, restricted by the USERNAME_WHITELIST
     application.add_handler(CommandHandler("poll", start_poll))
     application.add_handler(CommandHandler("release_kraken", start_poll))
     application.add_handler(CommandHandler("clearpoll", clear_poll))
